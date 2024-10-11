@@ -1,116 +1,25 @@
 ---@diagnostic disable: undefined-field
-local _, LUP = ...
+local _, SUP = ...
 
 local LibSerialize = LibStub("LibSerialize")
 local LibDeflate = LibStub("LibDeflate")
 
-function LUP:InitializeWeakAurasImporter()
+function SUP:InitializeWeakAurasImporter()
     if not SchwalbenUpdaterSaved.WeakAuras then SchwalbenUpdaterSaved.WeakAuras = {} end
-    for _, auraData in ipairs(LUP.WeakAuras) do
+    for _, auraData in ipairs(SUP.WeakAuras) do
         local displayName = auraData.displayName
         local version = auraData.version
-        local importedVersion = SchwalbenUpdaterSaved.WeakAuras[displayName] and SchwalbenUpdaterSaved.WeakAuras[displayName].d and SchwalbenUpdaterSaved.WeakAuras[displayName].d.liquidVersion
+        local importedVersion = SchwalbenUpdaterSaved.WeakAuras[displayName] and SchwalbenUpdaterSaved.WeakAuras[displayName].d and SchwalbenUpdaterSaved.WeakAuras[displayName].d.version
 
         if not importedVersion or importedVersion < version then
             local toDecode = auraData.data:match("!WA:2!(.+)")
+            local decoded = LibDeflate:DecodeForPrint(toDecode)
+            local decompressed = LibDeflate:DecompressDeflate(decoded)
+            local success, data = LibSerialize:Deserialize(decompressed)
 
-            if toDecode then
-                local decoded = LibDeflate:DecodeForPrint(toDecode)
-
-                if decoded then
-                    local decompressed = LibDeflate:DecompressDeflate(decoded)
-
-                    if decompressed then
-                        local success, data = LibSerialize:Deserialize(decompressed)
-                        
-                        data.d.liquidVersion = version
-
-                        if success then
-                            SchwalbenUpdaterSaved.WeakAuras[displayName] = data
-                        else
-                            LUP:ErrorPrint(string.format("could not deserialize aura data for [%s]", displayName))
-                        end
-                    else
-                        LUP:ErrorPrint(string.format("could not decompress aura data for [%s]", displayName))
-                    end
-                else
-                    LUP:ErrorPrint(string.format("could not decode aura data for [%s]", displayName))
-                end
-            else
-                LUP:ErrorPrint(string.format("aura data for [%s] does not start with a valid prefix", displayName))
+            if success then
+                SchwalbenUpdaterSaved.WeakAuras[displayName] = data
             end
         end
     end
-end
-
-function KethoEditBox_Show(text)
-    if not KethoEditBox then
-        local f = CreateFrame("Frame", "KethoEditBox", UIParent, "DialogBoxFrame")
-        f:SetPoint("CENTER")
-        f:SetSize(600, 500)
-        
-        f:SetBackdrop({
-            bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
-            edgeFile = "Interface\\PVPFrame\\UI-Character-PVP-Highlight", -- this one is neat
-            edgeSize = 16,
-            insets = { left = 8, right = 6, top = 8, bottom = 8 },
-        })
-        f:SetBackdropBorderColor(0, .44, .87, 0.5) -- darkblue
-        
-        -- Movable
-        f:SetMovable(true)
-        f:SetClampedToScreen(true)
-        f:SetScript("OnMouseDown", function(self, button)
-            if button == "LeftButton" then
-                self:StartMoving()
-            end
-        end)
-        f:SetScript("OnMouseUp", f.StopMovingOrSizing)
-        
-        -- ScrollFrame
-        local sf = CreateFrame("ScrollFrame", "KethoEditBoxScrollFrame", KethoEditBox, "UIPanelScrollFrameTemplate")
-        sf:SetPoint("LEFT", 16, 0)
-        sf:SetPoint("RIGHT", -32, 0)
-        sf:SetPoint("TOP", 0, -16)
-        sf:SetPoint("BOTTOM", KethoEditBoxButton, "TOP", 0, 0)
-        
-        -- EditBox
-        local eb = CreateFrame("EditBox", "KethoEditBoxEditBox", KethoEditBoxScrollFrame)
-        eb:SetSize(sf:GetSize())
-        eb:SetMultiLine(true)
-        eb:SetAutoFocus(false) -- dont automatically focus
-        eb:SetFontObject("ChatFontNormal")
-        eb:SetScript("OnEscapePressed", function() f:Hide() end)
-        sf:SetScrollChild(eb)
-        
-        -- Resizable
-        f:SetResizable(true)
-        f:SetResizeBounds(150, 100, nil, nil)
-        
-        local rb = CreateFrame("Button", "KethoEditBoxResizeButton", KethoEditBox)
-        rb:SetPoint("BOTTOMRIGHT", -6, 7)
-        rb:SetSize(16, 16)
-        
-        rb:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Up")
-        rb:SetHighlightTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Highlight")
-        rb:SetPushedTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Down")
-        
-        rb:SetScript("OnMouseDown", function(self, button)
-            if button == "LeftButton" then
-                f:StartSizing("BOTTOMRIGHT")
-                self:GetHighlightTexture():Hide() -- more noticeable
-            end
-        end)
-        rb:SetScript("OnMouseUp", function(self, button)
-            f:StopMovingOrSizing()
-            self:GetHighlightTexture():Show()
-            eb:SetWidth(sf:GetWidth())
-        end)
-        f:Show()
-    end
-    
-    if text then
-        KethoEditBoxEditBox:SetText(text)
-    end
-    KethoEditBox:Show()
 end

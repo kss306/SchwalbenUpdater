@@ -1,34 +1,30 @@
-local addOnName, LUP = ...
+local addOnName, SUP = ...
 
--- Tooltip
 CreateFrame("GameTooltip", "LRTooltip", UIParent, "GameTooltipTemplate")
 
-LUP.Tooltip = _G["LRTooltip"]
-LUP.Tooltip.TextLeft1:SetFont(LUP.gs.visual.font, 13)
+SUP.Tooltip = _G["LRTooltip"]
+SUP.Tooltip.TextLeft1:SetFont(SUP.gs.visual.font, 13)
 
--- Main window
 local windowWidth = 600
 local windowHeight = 400
 
-function LUP:InitializeInterface()
+function SUP:InitializeInterface()
     local screenWidth, screenHeight = GetPhysicalScreenSize()
 
     -- Window
-    LUP.window = LUP:CreateWindow("Main", true, true, true)
-    LUP.window:SetFrameStrata("HIGH")
-    LUP.window:SetResizeBounds(windowWidth, windowHeight) -- Height is set based on timeine data
-    LUP.window:Hide()
+    SUP.window = SUP:CreateWindow("Main", true, true, true)
+    SUP.window:SetFrameStrata("HIGH")
+    SUP.window:SetResizeBounds(windowWidth, windowHeight)
+    SUP.window:Hide()
 
-    -- Button frame
-    local buttonFrame = CreateFrame("Frame", nil, LUP.window)
+    local buttonFrame = CreateFrame("Frame", nil, SUP.window)
 
-    buttonFrame:SetPoint("TOPLEFT", LUP.window.moverFrame, "BOTTOMLEFT")
-    buttonFrame:SetPoint("TOPRIGHT", LUP.window.moverFrame, "BOTTOMRIGHT")
+    buttonFrame:SetPoint("TOPLEFT", SUP.window.moverFrame, "BOTTOMLEFT")
+    buttonFrame:SetPoint("TOPRIGHT", SUP.window.moverFrame, "BOTTOMRIGHT")
 
     buttonFrame:SetHeight(32)
 
-    -- Update button
-    local updateButton = CreateFrame("Frame", nil, LUP.window)
+    local updateButton = CreateFrame("Frame", nil, SUP.window)
 
     updateButton:SetPoint("TOPLEFT", buttonFrame, "TOPLEFT", 4, -4)
     updateButton:SetPoint("BOTTOMRIGHT", buttonFrame, "BOTTOM", -2, 0)
@@ -39,24 +35,23 @@ function LUP:InitializeInterface()
     updateButton.highlight:SetAllPoints()
 
     updateButton.text = updateButton:CreateFontString(nil, "OVERLAY")
-    updateButton.text:SetFont(LUP.gs.visual.font, 17, LUP.gs.visual.fontFlags)
+    updateButton.text:SetFont(SUP.gs.visual.font, 17, SUP.gs.visual.fontFlags)
     updateButton.text:SetPoint("CENTER", updateButton, "CENTER")
-    updateButton.text:SetText(string.format("|cff%sUpdate|r", LUP.gs.visual.colorStrings.white))
+    updateButton.text:SetText(string.format("|cff%sUpdate|r", SUP.gs.visual.colorStrings.white))
 
     updateButton:SetScript(
         "OnMouseDown",
         function()
-            LUP.updateWindow:Show()
-            LUP.checkWindow:Hide()
+            SUP.updateWindow:Show()
+            SUP.checkWindow:Hide()
         end
     )
 
-    local borderColor = LUP.gs.visual.borderColor
-    LUP:AddBorder(updateButton)
+    local borderColor = SUP.gs.visual.borderColor
+    SUP:AddBorder(updateButton)
     updateButton:SetBorderColor(borderColor.r, borderColor.g, borderColor.b)
 
-    -- Check button
-    local checkButton = CreateFrame("Frame", nil, LUP.window)
+    local checkButton = CreateFrame("Frame", nil, SUP.window)
 
     checkButton:SetPoint("TOPRIGHT", buttonFrame, "TOPRIGHT", -4, -4)
     checkButton:SetPoint("BOTTOMLEFT", buttonFrame, "BOTTOM", 2, 0)
@@ -67,40 +62,39 @@ function LUP:InitializeInterface()
     checkButton.highlight:SetAllPoints()
 
     checkButton.text = checkButton:CreateFontString(nil, "OVERLAY")
-    checkButton.text:SetFont(LUP.gs.visual.font, 17, LUP.gs.visual.fontFlags)
+    checkButton.text:SetFont(SUP.gs.visual.font, 17, SUP.gs.visual.fontFlags)
     checkButton.text:SetPoint("CENTER", checkButton, "CENTER")
-    checkButton.text:SetText(string.format("|cff%sCheck|r", LUP.gs.visual.colorStrings.white))
+    checkButton.text:SetText(string.format("|cff%sCheck|r", SUP.gs.visual.colorStrings.white))
 
     checkButton:SetScript(
         "OnMouseDown",
         function()
-            LUP.updateWindow:Hide()
-            LUP.checkWindow:Show()
+            SUP.updateWindow:Hide()
+            SUP.checkWindow:Show()
         end
     )
 
-    LUP:AddBorder(checkButton)
+    SUP:AddBorder(checkButton)
     checkButton:SetBorderColor(borderColor.r, borderColor.g, borderColor.b)
 
     -- Sub windows
-    LUP.updateWindow = CreateFrame("Frame", nil, LUP.window)
-    LUP.updateWindow:SetPoint("TOPLEFT", buttonFrame, "BOTTOMLEFT")
-    LUP.updateWindow:SetPoint("BOTTOMRIGHT", LUP.window, "BOTTOMRIGHT")
+    SUP.updateWindow = CreateFrame("Frame", nil, SUP.window)
+    SUP.updateWindow:SetPoint("TOPLEFT", buttonFrame, "BOTTOMLEFT")
+    SUP.updateWindow:SetPoint("BOTTOMRIGHT", SUP.window, "BOTTOMRIGHT")
 
-    LUP.checkWindow = CreateFrame("Frame", nil, LUP.window)
-    LUP.checkWindow:SetPoint("TOPLEFT", buttonFrame, "BOTTOMLEFT")
-    LUP.checkWindow:SetPoint("BOTTOMRIGHT", LUP.window, "BOTTOMRIGHT")
+    SUP.checkWindow = CreateFrame("Frame", nil, SUP.window)
+    SUP.checkWindow:SetPoint("TOPLEFT", buttonFrame, "BOTTOMLEFT")
+    SUP.checkWindow:SetPoint("BOTTOMRIGHT", SUP.window, "BOTTOMRIGHT")
 
-    LUP.checkWindow:Hide()
+    SUP.checkWindow:Hide()
 
-    -- If there's no saved position/size settings for the main window yet, apply some default values
     local windowSettings = SchwalbenUpdaterSaved.settings.frames["Main"]
 
     if not windowSettings or not windowSettings.points then
-        LUP.window:SetPoint("TOPLEFT", UIParent, "TOPLEFT", (screenWidth - windowWidth) / 2, -(screenHeight - windowHeight) / 2)
+        SUP.window:SetPoint("TOPLEFT", UIParent, "TOPLEFT", (screenWidth - windowWidth) / 2, -(screenHeight - windowHeight) / 2)
     end
 
     if not windowSettings or not windowSettings.width then
-        LUP.window:SetSize(windowWidth, windowHeight)
+        SUP.window:SetSize(windowWidth, windowHeight)
     end
 end

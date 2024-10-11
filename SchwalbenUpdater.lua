@@ -1,4 +1,4 @@
-local _, LUP = ...
+local _, SUP = ...
 
 local LDB = LibStub("LibDataBroker-1.1")
 local LDBIcon = LibStub("LibDBIcon-1.0")
@@ -19,28 +19,28 @@ eventFrame:SetScript(
                 if not SchwalbenUpdaterSaved.settings.frames then SchwalbenUpdaterSaved.settings.frames = {} end
 
                 -- Minimap icon
-                LUP.LDB = LDB:NewDataObject(
+                SUP.LDB = LDB:NewDataObject(
                     "Schwalben Updater",
                     {
                         type = "data source",
                         text = "Schwalben Updater",
                         icon = [[Interface\Addons\SchwalbenUpdater\Media\Textures\minimap_logo.tga]],
-                        OnClick = function() LUP.window:SetShown(not LUP.window:IsShown()) end
+                        OnClick = function() SUP.window:SetShown(not SUP.window:IsShown()) end
                     }
                 )
 
-                LDBIcon:Register("Schwalben Updater", LUP.LDB, SchwalbenUpdaterSaved.minimap)
+                LDBIcon:Register("Schwalben Updater", SUP.LDB, SchwalbenUpdaterSaved.minimap)
                 
-                LUP:InitializeWeakAurasImporter()
-                LUP:InitializeInterface()
-                LUP:InitializeAuraUpdater()
-                LUP:InitializeAuraChecker()
+                SUP:InitializeWeakAurasImporter()
+                SUP:InitializeInterface()
+                SUP:InitializeAuraUpdater()
+                SUP:InitializeAuraChecker()
             end
         end
     end
 )
 
-SLASH_LIQUIDUPDATER1 = "/sup" -- , SLASH_LIQUIDUPDATER2, SLASH_LIQUIDUPDATER3 = "/sup", "/liquidupdate", "/liquidupdater"
-function SlashCmdList.LIQUIDUPDATER()
-    LUP.window:SetShown(not LUP.window:IsShown())
+SLASH_SCHWALBENUPDATER1, SLASH_SCHWALBENUPDATER2 = "/sup" , "/schwalbenupdate"
+function SlashCmdList.SCHWALBENUPDATER()
+    SUP.window:SetShown(not SUP.window:IsShown())
 end

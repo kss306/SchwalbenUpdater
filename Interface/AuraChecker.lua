@@ -1,4 +1,4 @@
-local _, LUP = ...
+local _, SUP = ...
 
 -- Element variables
 local nameFrameWidth = 150
@@ -41,7 +41,7 @@ end
 
 local function BuildAuraLabels()
     if not labelFrame then
-        labelFrame = CreateFrame("Frame", nil, LUP.checkWindow)
+        labelFrame = CreateFrame("Frame", nil, SUP.checkWindow)
         labelFrame:SetPoint("BOTTOMLEFT", scrollFrame, "TOPLEFT", 0, 4)
         labelFrame:SetPoint("BOTTOMRIGHT", scrollFrame, "TOPRIGHT", 0, 4)
         labelFrame:SetHeight(24)
@@ -51,7 +51,7 @@ local function BuildAuraLabels()
 
     local sortedLabelTable = {}
 
-    for displayName in pairs(LUP.highestSeenVersionsTable) do
+    for displayName in pairs(SUP.highestSeenVersionsTable) do
         table.insert(sortedLabelTable, displayName)
     end
 
@@ -74,24 +74,23 @@ local function BuildAuraLabels()
         if not labels[i] then
             labels[i] = labelFrame:CreateFontString(nil, "OVERLAY")
 
-            labels[i]:SetFont(LUP.gs.visual.font, 15, LUP.gs.visual.fontFlags)
+            labels[i]:SetFont(SUP.gs.visual.font, 15, SUP.gs.visual.fontFlags)
         end
 
-        labels[i]:SetText(string.format("|cff%s%s|r", LUP.gs.visual.colorStrings.white, displayName))
+        labels[i]:SetText(string.format("|cff%s%s|r", SUP.gs.visual.colorStrings.white, displayName))
     end
 
     PositionAuraLabels(nil, scrollFrame:GetWidth())
 end
 
-function LUP:UpdateCheckElementForUnit(unit, versionsTable)
+function SUP:UpdateCheckElementForUnit(unit, versionsTable)
     local GUID = UnitGUID(unit)
 
     if not GUID then return end
     if not ShouldUpdate(GUID, versionsTable) then return end
 
-    guidToVersionsTable[GUID] = versionsTable or {} -- Save for use in RebuildAllCheckElements()
+    guidToVersionsTable[GUID] = versionsTable or {}
 
-    -- If this unit already has an element, remove it
     dataProvider:RemoveByPredicate(
         function(elementData)
             return elementData.GUID == GUID
@@ -114,9 +113,7 @@ function LUP:UpdateCheckElementForUnit(unit, versionsTable)
         versionsBehindTable = {}
     }
 
-    -- Compare unit's versions against the highest ones we've seen so far
-    -- Set version to -1 if no version table was provided (i.e. we have no info for this unit)
-    for displayName, highestVersion in pairs(LUP.highestSeenVersionsTable) do
+    for displayName, highestVersion in pairs(SUP.highestSeenVersionsTable) do
         local version = versionsTable and versionsTable[displayName] or 0
         local versionsBehind = versionsTable and highestVersion - version or -1
 
@@ -129,7 +126,6 @@ function LUP:UpdateCheckElementForUnit(unit, versionsTable)
         )
     end
 
-    -- Sort the aura versions so they match the labels
     table.sort(
         data.versionsBehindTable,
         function(info1, info2)
@@ -147,18 +143,17 @@ function LUP:UpdateCheckElementForUnit(unit, versionsTable)
     dataProvider:Insert(data)
 end
 
-function LUP:AddCheckElementsForNewUnits()
-    for unit in LUP:IterateGroupMembers() do
+function SUP:AddCheckElementsForNewUnits()
+    for unit in SUP:IterateGroupMembers() do
         local GUID = UnitGUID(unit)
 
         if not guidToVersionsTable[GUID] then
-            LUP:UpdateCheckElementForUnit(unit)
+            SUP:UpdateCheckElementForUnit(unit)
         end
     end
 end
 
--- Iterates existing elements, and removes those whose units are no longer in our group
-function LUP:RemoveCheckElementsForInvalidUnits()
+function SUP:RemoveCheckElementsForInvalidUnits()
     for i, data in dataProvider:ReverseEnumerate() do
         local unit = data.unit
 
@@ -170,12 +165,12 @@ function LUP:RemoveCheckElementsForInvalidUnits()
     end
 end
 
-function LUP:RebuildAllCheckElements()
-    for unit in LUP:IterateGroupMembers() do
+function SUP:RebuildAllCheckElements()
+    for unit in SUP:IterateGroupMembers() do
         local GUID = UnitGUID(unit)
         local versionsTable = guidToVersionsTable[GUID]
 
-        LUP:UpdateCheckElementForUnit(unit, versionsTable)
+        SUP:UpdateCheckElementForUnit(unit, versionsTable)
     end
 
     BuildAuraLabels()
@@ -198,11 +193,11 @@ local function CheckElementInitializer(frame, data)
     if not frame.coloredName then
         frame.coloredName = frame:CreateFontString(nil, "OVERLAY")
 
-        frame.coloredName:SetFont(LUP.gs.visual.font, 21, LUP.gs.visual.fontFlags)
+        frame.coloredName:SetFont(SUP.gs.visual.font, 21, SUP.gs.visual.fontFlags)
         frame.coloredName:SetPoint("LEFT", frame, "LEFT", 8, 0)
     end
 
-    frame.coloredName:SetText(string.format("|cff%s%s|r", LUP.gs.visual.colorStrings.white, data.coloredName))
+    frame.coloredName:SetText(string.format("|cff%s%s|r", SUP.gs.visual.colorStrings.white, data.coloredName))
 
     for i, versionInfo in ipairs(data.versionsBehindTable) do
         local versionsBehind = versionInfo.versionsBehind
@@ -211,7 +206,7 @@ local function CheckElementInitializer(frame, data)
         if not versionFrame.versionsBehindText then
             versionFrame.versionsBehindText = versionFrame:CreateFontString(nil, "OVERLAY")
 
-            versionFrame.versionsBehindText:SetFont(LUP.gs.visual.font, 21, LUP.gs.visual.fontFlags)
+            versionFrame.versionsBehindText:SetFont(SUP.gs.visual.font, 21, SUP.gs.visual.fontFlags)
             versionFrame.versionsBehindText:SetPoint("CENTER", versionFrame, "CENTER")
         end
 
@@ -230,9 +225,9 @@ local function CheckElementInitializer(frame, data)
 
             versionFrame.versionsBehindIcon.tex:SetAtlas("common-icon-checkmark")
 
-            LUP:AddTooltip(
+            SUP:AddTooltip(
                 versionFrame,
-                "This player's aura is up to date."
+                "Alle Weakauren aktuell."
             )
         elseif versionsBehind == -1 then
             versionFrame.versionsBehindText:Hide()
@@ -240,19 +235,19 @@ local function CheckElementInitializer(frame, data)
 
             versionFrame.versionsBehindIcon.tex:SetAtlas("QuestTurnin")
 
-            LUP:AddTooltip(
+            SUP:AddTooltip(
                 versionFrame,
-                "No info has been received for this player's auras.|n|nThey may not have SchwalbenUpdater installed."
+                "Keine Infos über diesen Spieler.|n|nSchwalbenUpdater ist vermutlich nicht installiert."
             )
         else
             versionFrame.versionsBehindText:Show()
             versionFrame.versionsBehindIcon:Hide()
 
-            versionFrame.versionsBehindText:SetText(string.format("|cff%s%d|r", LUP.gs.visual.colorStrings.red, versionsBehind))
+            versionFrame.versionsBehindText:SetText(string.format("|cff%s%d|r", SUP.gs.visual.colorStrings.red, versionsBehind))
 
-            LUP:AddTooltip(
+            SUP:AddTooltip(
                 versionFrame,
-                string.format("This player's aura is %d version(s) behind.", versionsBehind)
+                string.format("%d Weakauren Version(en) hinterher.", versionsBehind)
             )
         end
     end
@@ -274,12 +269,12 @@ local function CheckElementInitializer(frame, data)
     frame:SetScript("OnSizechanged", frame.PositionVersionFrames)
 end
 
-function LUP:InitializeAuraChecker()
-    scrollFrame = CreateFrame("Frame", nil, LUP.checkWindow, "WowScrollBoxList")
-    scrollFrame:SetPoint("TOPLEFT", LUP.checkWindow, "TOPLEFT", 4, -32)
-    scrollFrame:SetPoint("BOTTOMRIGHT", LUP.checkWindow, "BOTTOMRIGHT", -24, 4)
+function SUP:InitializeAuraChecker()
+    scrollFrame = CreateFrame("Frame", nil, SUP.checkWindow, "WowScrollBoxList")
+    scrollFrame:SetPoint("TOPLEFT", SUP.checkWindow, "TOPLEFT", 4, -32)
+    scrollFrame:SetPoint("BOTTOMRIGHT", SUP.checkWindow, "BOTTOMRIGHT", -24, 4)
 
-    scrollBar = CreateFrame("EventFrame", nil, LUP.checkWindow, "MinimalScrollBar")
+    scrollBar = CreateFrame("EventFrame", nil, SUP.checkWindow, "MinimalScrollBar")
     scrollBar:SetPoint("TOP", scrollFrame, "TOPRIGHT", 12, 0)
     scrollBar:SetPoint("BOTTOM", scrollFrame, "BOTTOMRIGHT", 12, 16)
 
@@ -320,9 +315,9 @@ function LUP:InitializeAuraChecker()
     )
 
     -- Border
-    local borderColor = LUP.gs.visual.borderColor
-    LUP:AddBorder(scrollFrame)
+    local borderColor = SUP.gs.visual.borderColor
+    SUP:AddBorder(scrollFrame)
     scrollFrame:SetBorderColor(borderColor.r, borderColor.g, borderColor.b)
 
-    LUP:RebuildAllCheckElements()
+    SUP:RebuildAllCheckElements()
 end

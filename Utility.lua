@@ -1,5 +1,5 @@
 ---@diagnostic disable: deprecated
-local _, LUP = ...
+local _, SUP = ...
 
 local bytetoB64 = {
     [0]="a","b","c","d","e","f","g","h",
@@ -14,7 +14,7 @@ local bytetoB64 = {
 
 -- Generates a unique random 11 digit number in base64
 -- Taken from WeakAuras
-function LUP:GenerateUniqueID()
+function SUP:GenerateUniqueID()
     local s = {}
 
     for _ = 1, 11 do
@@ -25,7 +25,7 @@ function LUP:GenerateUniqueID()
 end
 
 -- Rounds a value, optionally to a certain number of decimals
-function LUP:Round(value, decimals)
+function SUP:Round(value, decimals)
     if not decimals then decimals = 0 end
     
     local p = math.pow(10, decimals)
@@ -38,7 +38,7 @@ function LUP:Round(value, decimals)
 end
 
 -- Same as the game's SecondsToClock, except adds a single decimal to the seconds
-function LUP:SecondsToClock(seconds, displayZeroHours)
+function SUP:SecondsToClock(seconds, displayZeroHours)
 	local units = ConvertSecondsToUnits(seconds)
 
 	if units.hours > 0 or displayZeroHours then
@@ -51,7 +51,7 @@ end
 -- Iterates group units
 -- Usage: <for unit in LRP:IterateGroupMembers() do>
 -- Taken from WeakAuras
-function LUP:IterateGroupMembers(reversed, forceParty)
+function SUP:IterateGroupMembers(reversed, forceParty)
     local unit = (not forceParty and IsInRaid()) and "raid" or "party"
     local numGroupMembers = unit == "party" and GetNumSubgroupMembers() or GetNumGroupMembers()
     local i = reversed and numGroupMembers or (unit == "party" and 0 or 1)
@@ -73,7 +73,7 @@ end
 
 -- Adds a tooltip to a frame
 -- Can be called repeatedly to change the tooltip
-function LUP:AddTooltip(frame, tooltipText, secondaryTooltipText) 
+function SUP:AddTooltip(frame, tooltipText, secondaryTooltipText) 
     if not tooltipText then tooltipText = "" end
 
     frame.secondaryTooltipText = secondaryTooltipText -- Used for stuff like warnings/additional info that shouldn't change the main tooltip text
@@ -99,50 +99,50 @@ function LUP:AddTooltip(frame, tooltipText, secondaryTooltipText)
             function()
                 if not frame.tooltipText or frame.tooltipText == "" then return end
                 
-                LUP.Tooltip:Hide()
-                LUP.Tooltip:SetOwner(frame, "ANCHOR_RIGHT")
+                SUP.Tooltip:Hide()
+                SUP.Tooltip:SetOwner(frame, "ANCHOR_RIGHT")
 
                 if frame.secondaryTooltipText and frame.secondaryTooltipText ~= "" then
-                    LUP.Tooltip:SetText(string.format("%s|n|n%s", frame.tooltipText, frame.secondaryTooltipText), 0.9, 0.9, 0.9, 1, true)
+                    SUP.Tooltip:SetText(string.format("%s|n|n%s", frame.tooltipText, frame.secondaryTooltipText), 0.9, 0.9, 0.9, 1, true)
                 else
-                    LUP.Tooltip:SetText(frame.tooltipText, 0.9, 0.9, 0.9, 1, true)
+                    SUP.Tooltip:SetText(frame.tooltipText, 0.9, 0.9, 0.9, 1, true)
                 end
 
-                LUP.Tooltip:Show()
+                SUP.Tooltip:Show()
             end
         )
 
         frame:HookScript(
             "OnLeave",
             function()
-                LUP.Tooltip:Hide()
+                SUP.Tooltip:Hide()
             end
         )
     end
 end
 
 -- Refreshes the tooltip that is currently showing
-function LUP:RefreshTooltip()
-    if LUP.Tooltip:IsVisible() then
-        local frame = LUP.Tooltip:GetOwner()
+function SUP:RefreshTooltip()
+    if SUP.Tooltip:IsVisible() then
+        local frame = SUP.Tooltip:GetOwner()
 
         if frame and frame.tooltipText then
             if frame.secondaryTooltipText and frame.secondaryTooltipText ~= "" then
-                LUP.Tooltip:SetText(string.format("%s|n|n%s", frame.tooltipText, frame.secondaryTooltipText), 0.9, 0.9, 0.9, 1, true)
+                SUP.Tooltip:SetText(string.format("%s|n|n%s", frame.tooltipText, frame.secondaryTooltipText), 0.9, 0.9, 0.9, 1, true)
             else
-                LUP.Tooltip:SetText(frame.tooltipText, 0.9, 0.9, 0.9, 1, true)
+                SUP.Tooltip:SetText(frame.tooltipText, 0.9, 0.9, 0.9, 1, true)
             end
         end
     end
 end
 
 -- Takes an icon ID and returns an in-line icon string
-function LUP:IconString(iconID)
+function SUP:IconString(iconID)
     return CreateTextureMarkup(iconID, 64, 64, 0, 0, 5/64, 59/64, 5/64, 59/64)
 end
 
 -- Save the size/position of a frame in SavedVariables, keyed by some name
-function LUP:SaveSize(frame, name)
+function SUP:SaveSize(frame, name)
     if not SchwalbenUpdaterSaved.settings.frames[name] then
         SchwalbenUpdaterSaved.settings.frames[name] = {}
     end
@@ -153,7 +153,7 @@ function LUP:SaveSize(frame, name)
     SchwalbenUpdaterSaved.settings.frames[name].height = height
 end
 
-function LUP:SavePosition(frame, name)
+function SUP:SavePosition(frame, name)
     if not SchwalbenUpdaterSaved.settings.frames[name] then
         SchwalbenUpdaterSaved.settings.frames[name] = {}
     end
@@ -180,7 +180,7 @@ function LUP:SavePosition(frame, name)
 end
 
 -- Restore and apply saved size/position to a frame, keyed by some name
-function LUP:RestoreSize(frame, name)
+function SUP:RestoreSize(frame, name)
     local settings = SchwalbenUpdaterSaved.settings.frames[name]
 
     if not settings then return end
@@ -190,7 +190,7 @@ function LUP:RestoreSize(frame, name)
     frame:SetSize(settings.width, settings.height)
 end
 
-function LUP:RestorePosition(frame, name)
+function SUP:RestorePosition(frame, name)
     local settings = SchwalbenUpdaterSaved.settings.frames[name]
 
     if not (settings and settings.points) then return end
@@ -201,7 +201,7 @@ function LUP:RestorePosition(frame, name)
 end
 
 -- Adds a 1 pixel border to a frame
-function LUP:AddBorder(parent, thickness, horizontalOffset, verticalOffset)
+function SUP:AddBorder(parent, thickness, horizontalOffset, verticalOffset)
     if not thickness then thickness = 1 end
     if not horizontalOffset then horizontalOffset = 0 end
     if not verticalOffset then verticalOffset = 0 end
@@ -256,8 +256,4 @@ function LUP:AddBorder(parent, thickness, horizontalOffset, verticalOffset)
     end
 
     parent:SetBorderColor(0, 0, 0)
-end
-
-function LUP:ErrorPrint(text)
-    print(string.format("SchwalbenUpdater |cffff0000ERROR|r: %s", text))
 end

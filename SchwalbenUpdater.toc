@@ -9,7 +9,7 @@
 embeds.xml
 
 GlobalSettings.lua
-WeakAurasNew.lua
+WeakAuras.lua
 WeakAurasImporter.lua
 Utility.lua
 

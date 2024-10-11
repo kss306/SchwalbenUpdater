@@ -1,5 +1,5 @@
 ---@diagnostic disable: undefined-field
-local addOnName, LUP = ...
+local addOnName, SUP = ...
 
 local LibSerialize = LibStub("LibSerialize")
 local LibDeflate = LibStub("LibDeflate")
@@ -18,13 +18,13 @@ local allAurasUpdatedText
 
 local function SerializeVersionsTable()
     local versionsTable = {
-        LiquidUpdater = tonumber(C_AddOns.GetAddOnMetadata(addOnName, "Version")) -- AddOn version
+        SchwalbenUpdater = tonumber(C_AddOns.GetAddOnMetadata(addOnName, "Version")) -- AddOn version
     }
 
     for displayName, auraData in pairs(SchwalbenUpdaterSaved.WeakAuras) do
         local uid = auraData.d.uid
         local installedAuraID = uid and UIDToID[uid]
-        local installedVersion = installedAuraID and WeakAuras.GetData(installedAuraID).liquidVersion or 0
+        local installedVersion = installedAuraID and WeakAuras.GetData(installedAuraID).version or 0
 
         versionsTable[displayName] = installedVersion
     end
@@ -34,16 +34,12 @@ local function SerializeVersionsTable()
     local encoded = LibDeflate:EncodeForWoWAddonChannel(compressed)
 
     serializedTable = encoded
-
-    if not serializedTable then
-        LUP:ErrorPrint("could not serialize version table")
-    end
 end
 
 local function BroadcastVersions()
     if not serializedTable then return end
 
-    AceComm:SendCommMessage("LU_Versions", serializedTable, "GUILD")
+    AceComm:SendCommMessage("SU_Versions", serializedTable, "GUILD")
 end
 
 local function BuildAuraImportElements()
@@ -55,12 +51,12 @@ local function BuildAuraImportElements()
     -- Check which auras require updates
     local aurasToUpdate = {}
 
-    for displayName, highestSeenVersion in pairs(LUP.highestSeenVersionsTable) do
+    for displayName, highestSeenVersion in pairs(SUP.highestSeenVersionsTable) do
         local auraData = SchwalbenUpdaterSaved.WeakAuras[displayName]
         local uid = auraData and auraData.d.uid
-        local importedVersion = auraData and auraData.d.liquidVersion or 0
+        local importedVersion = auraData and auraData.d.version or 0
         local installedAuraID = uid and UIDToID[uid]
-        local installedVersion = installedAuraID and WeakAuras.GetData(installedAuraID).liquidVersion or 0
+        local installedVersion = installedAuraID and WeakAuras.GetData(installedAuraID).version or 0
 
         if installedVersion < importedVersion then
             table.insert(
@@ -90,14 +86,14 @@ local function BuildAuraImportElements()
     )
 
     -- Build the aura import elements
-    local parent = LUP.updateWindow
+    local parent = SUP.updateWindow
 
     for _, element in ipairs(auraImportElementPool) do
         element:Hide()
     end
 
     for i, auraData in ipairs(aurasToUpdate) do
-        local auraImportFrame = auraImportElementPool[i] or LUP:CreateAuraImportElement(parent)
+        local auraImportFrame = auraImportElementPool[i] or SUP:CreateAuraImportElement(parent)
 
         auraImportFrame:SetDisplayName(auraData.displayName)
         auraImportFrame:SetVersionsBehind(auraData.highestSeenVersion - auraData.installedVersion)
@@ -111,11 +107,11 @@ local function BuildAuraImportElements()
     end
 
     if next(aurasToUpdate) then
-        LUP.LDB.icon = [[Interface\Addons\SchwalbenUpdater\Media\Textures\minimap_logo_red.tga]]
+        SUP.LDB.icon = [[Interface\Addons\SchwalbenUpdater\Media\Textures\minimap_logo_red.tga]]
 
         allAurasUpdatedText:Hide()
     else
-        LUP.LDB.icon = [[Interface\Addons\SchwalbenUpdater\Media\Textures\minimap_logo.tga]]
+        SUP.LDB.icon = [[Interface\Addons\SchwalbenUpdater\Media\Textures\minimap_logo.tga]]
 
         allAurasUpdatedText:Show()
     end
@@ -126,8 +122,6 @@ end
 local function QueueUpdate()
     if updateQueued then return end
 
-    -- Don't update more than once per second
-    -- This is mostly to prevent the update function from running when a large number of auras get added simultaneously
     local timeSinceLastUpdate = GetTime() - lastUpdate
 
     if timeSinceLastUpdate > 1 then
@@ -140,40 +134,20 @@ local function QueueUpdate()
 end
 
 local function RequestVersions(chatType)
-    AceComm:SendCommMessage("LU_Request", " ", chatType or "GUILD")
+    AceComm:SendCommMessage("SU_Request", " ", chatType or "GUILD")
 end
 
 local function ReceiveVersions(_, payload, _, sender)
-    local shouldFullRebuild = false -- Whether all check elements should be rebuilt. Only happens if a new version is seen.
+    local shouldFullRebuild = false
     local decoded = LibDeflate:DecodeForWoWAddonChannel(payload)
-
-    if not decoded then
-        LUP:ErrorPrint(string.format("could not decode version table received from %s", sender))
-
-        return
-    end
-
     local decompressed = LibDeflate:DecompressDeflate(decoded)
-
-    if not decoded then
-        LUP:ErrorPrint(string.format("could not decompress version table received from %s", sender))
-
-        return
-    end
-
     local success, versionsTable = LibSerialize:Deserialize(decompressed)
 
-    if not success then
-        LUP:ErrorPrint(string.format("could not deserialize version table received from %s", sender))
-
-        return
-    end
-
     for displayName, version in pairs(versionsTable) do
-        local highestSeenVersion = LUP.highestSeenVersionsTable[displayName]
+        local highestSeenVersion = SUP.highestSeenVersionsTable[displayName]
 
         if not highestSeenVersion or highestSeenVersion < version then
-            LUP.highestSeenVersionsTable[displayName] = version
+            SUP.highestSeenVersionsTable[displayName] = version
 
             shouldFullRebuild = true
         end
@@ -182,24 +156,24 @@ local function ReceiveVersions(_, payload, _, sender)
     if shouldFullRebuild then
         BuildAuraImportElements()
 
-        LUP:RebuildAllCheckElements()
+        SUP:RebuildAllCheckElements()
     else
-        LUP:UpdateCheckElementForUnit(sender, versionsTable)
+        SUP:UpdateCheckElementForUnit(sender, versionsTable)
     end
 end
 
-function LUP:InitializeAuraUpdater()
-    LUP.highestSeenVersionsTable = {
-        LiquidUpdater = tonumber(C_AddOns.GetAddOnMetadata(addOnName, "Version")) -- AddOn version
+function SUP:InitializeAuraUpdater()
+    SUP.highestSeenVersionsTable = {
+        SchwalbenUpdater = tonumber(C_AddOns.GetAddOnMetadata(addOnName, "Version")) -- AddOn version
     }
 
-    AceComm:RegisterComm("LU_Request", BroadcastVersions)
-    AceComm:RegisterComm("LU_Versions", ReceiveVersions)
+    AceComm:RegisterComm("SU_Request", BroadcastVersions)
+    AceComm:RegisterComm("SU_Versions", ReceiveVersions)
 
     for displayName, auraData in pairs(SchwalbenUpdaterSaved.WeakAuras) do
         auraUIDs[auraData.d.uid] = true
 
-        LUP.highestSeenVersionsTable[displayName] = auraData.d.liquidVersion
+        SUP.highestSeenVersionsTable[displayName] = auraData.d.version
     end
 
     if WeakAuras and WeakAurasSaved and WeakAurasSaved.displays then
@@ -248,11 +222,11 @@ function LUP:InitializeAuraUpdater()
         )
     end
 
-    allAurasUpdatedText = LUP.updateWindow:CreateFontString(nil, "OVERLAY")
+    allAurasUpdatedText = SUP.updateWindow:CreateFontString(nil, "OVERLAY")
 
-    allAurasUpdatedText:SetFont(LUP.gs.visual.font, 21, LUP.gs.visual.fontFlags)
-    allAurasUpdatedText:SetPoint("CENTER", LUP.updateWindow, "CENTER")
-    allAurasUpdatedText:SetText(string.format("|cff%sAll auras up to date!|r", LUP.gs.visual.colorStrings.green))
+    allAurasUpdatedText:SetFont(SUP.gs.visual.font, 21, SUP.gs.visual.fontFlags)
+    allAurasUpdatedText:SetPoint("CENTER", SUP.updateWindow, "CENTER")
+    allAurasUpdatedText:SetText(string.format("|cff%sAlle Weakauren aktuell!|r", SUP.gs.visual.colorStrings.green))
 
     BuildAuraImportElements()
     RequestVersions()
@@ -260,8 +234,8 @@ end
 
 local function OnEvent(_, event)
     if event == "GROUP_ROSTER_UPDATE" then
-        LUP:RemoveCheckElementsForInvalidUnits()
-        LUP:AddCheckElementsForNewUnits()
+        SUP:RemoveCheckElementsForInvalidUnits()
+        SUP:AddCheckElementsForNewUnits()
     elseif event == "GROUP_JOINED" then
         local chatType = IsInGroup(LE_PARTY_CATEGORY_INSTANCE) and "INSTANCE_CHAT" or IsInRaid() and "RAID" or "PARTY"
 

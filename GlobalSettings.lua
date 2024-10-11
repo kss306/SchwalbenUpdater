@@ -1,7 +1,6 @@
-local _, LUP = ...
+local _, SUP = ...
 
-LUP.gs = {
-    debug = false, -- Debug mode adds some additional features
+SUP.gs = {
     visual = {
         font = "Interface\\Addons\\SchwalbenUpdater\\Media\\Fonts\\PTSansNarrow.ttf",
         fontFlags = "",

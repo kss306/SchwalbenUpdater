@@ -1,6 +1,6 @@
-local _, LUP = ...
+local _, SUP = ...
 
-function LUP:CreateAuraImportElement(parent)
+function SUP:CreateAuraImportElement(parent)
     -- Outer frame
     local frame = CreateFrame("Frame", nil, parent)
 
@@ -22,11 +22,11 @@ function LUP:CreateAuraImportElement(parent)
     -- Display name
     frame.displayName = frame:CreateFontString(nil, "OVERLAY")
 
-    frame.displayName:SetFont(LUP.gs.visual.font, 17, LUP.gs.visual.fontFlags)
+    frame.displayName:SetFont(SUP.gs.visual.font, 17, SUP.gs.visual.fontFlags)
     frame.displayName:SetPoint("LEFT", frame, "LEFT", 8, 0)
     
     function frame:SetDisplayName(displayName)
-        frame.displayName:SetText(string.format("|cff%s%s|r", LUP.gs.visual.colorStrings.white, displayName))
+        frame.displayName:SetText(string.format("|cff%s%s|r", SUP.gs.visual.colorStrings.white, displayName))
 
         local auraData = SchwalbenUpdaterSaved.WeakAuras[displayName]
 
@@ -50,11 +50,11 @@ function LUP:CreateAuraImportElement(parent)
     -- Version count
     frame.versionCount = frame:CreateFontString(nil, "OVERLAY")
 
-    frame.versionCount:SetFont(LUP.gs.visual.font, 17, LUP.gs.visual.fontFlags)
+    frame.versionCount:SetFont(SUP.gs.visual.font, 17, SUP.gs.visual.fontFlags)
     frame.versionCount:SetPoint("CENTER", frame, "CENTER")
     
     function frame:SetVersionsBehind(count)
-        frame.versionCount:SetText(string.format("|cff%s%d version(s)|r", LUP.gs.visual.colorStrings.red, count))
+        frame.versionCount:SetText(string.format("|cff%s%d Version(en)|r", SUP.gs.visual.colorStrings.red, count))
     end
 
     -- Import button
@@ -62,24 +62,24 @@ function LUP:CreateAuraImportElement(parent)
 
     frame.importButton:SetPoint("RIGHT", frame, "RIGHT", -8, 0)
     frame.importButton:SetText("Update")
-    frame.importButton:GetFontString():SetFont(LUP.gs.visual.font, 13)
+    frame.importButton:GetFontString():SetFont(SUP.gs.visual.font, 13)
 
     C_Timer.After(0, function() frame.importButton:SetSize(frame.importButton:GetTextWidth() + 20, 32) end)
 
     -- Requires addon update text
     frame.requiresUpdateText = frame:CreateFontString(nil, "OVERLAY")
 
-    frame.requiresUpdateText:SetFont(LUP.gs.visual.font, 17, LUP.gs.visual.fontFlags)
+    frame.requiresUpdateText:SetFont(SUP.gs.visual.font, 17, SUP.gs.visual.fontFlags)
     frame.requiresUpdateText:SetPoint("RIGHT", frame, "RIGHT", -8, 0)
-    frame.requiresUpdateText:SetText(string.format("|cff%sUpdate addon!|r", LUP.gs.visual.colorStrings.red))
+    frame.requiresUpdateText:SetText(string.format("|cff%sAddon Updaten!|r", SUP.gs.visual.colorStrings.red))
     frame.requiresUpdateText:Hide()
 
-    LUP:AddTooltip(frame.requiresUpdateText, "A newer version of this aura is available. Update the addon to receive it.")
+    SUP:AddTooltip(frame.requiresUpdateText, "Eine neuere Version ist verfügbar. Aktuelle dein Addon für die Installation.")
 
     -- Border
-    LUP:AddBorder(frame)
+    SUP:AddBorder(frame)
 
-    local borderColor = LUP.gs.visual.borderColor
+    local borderColor = SUP.gs.visual.borderColor
 
     frame:SetBorderColor(borderColor.r, borderColor.g, borderColor.b)
 
