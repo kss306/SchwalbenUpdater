@@ -24,10 +24,7 @@ local function SerializeVersionsTable()
     for displayName, auraData in pairs(SchwalbenUpdaterSaved.WeakAuras) do
         local uid = auraData.d.uid
         local installedAuraID = uid and UIDToID[uid]
-        local installedVersion = installedAuraID and WeakAuras.GetData(installedAuraID).version or 0
-
-        print(installedAuraID)
-        print(installedVersion)
+        local installedVersion = installedAuraID and WeakAuras.GetData(installedAuraID).liquidVersion or 0
 
         versionsTable[displayName] = installedVersion
     end
@@ -63,7 +60,7 @@ local function BuildAuraImportElements()
         local uid = auraData and auraData.d.uid
         local importedVersion = auraData and auraData.d.liquidVersion or 0
         local installedAuraID = uid and UIDToID[uid]
-        local installedVersion = installedAuraID and WeakAuras.GetData(installedAuraID).version or 0
+        local installedVersion = installedAuraID and WeakAuras.GetData(installedAuraID).liquidVersion or 0
 
         if installedVersion < importedVersion then
             table.insert(
