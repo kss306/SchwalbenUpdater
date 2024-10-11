@@ -21,7 +21,7 @@ local function SerializeVersionsTable()
         LiquidUpdater = tonumber(C_AddOns.GetAddOnMetadata(addOnName, "Version")) -- AddOn version
     }
 
-    for displayName, auraData in pairs(LiquidUpdaterSaved.WeakAuras) do
+    for displayName, auraData in pairs(SchwalbenUpdaterSaved.WeakAuras) do
         local uid = auraData.d.uid
         local installedAuraID = uid and UIDToID[uid]
         local installedVersion = installedAuraID and WeakAuras.GetData(installedAuraID).liquidVersion or 0
@@ -56,7 +56,7 @@ local function BuildAuraImportElements()
     local aurasToUpdate = {}
 
     for displayName, highestSeenVersion in pairs(LUP.highestSeenVersionsTable) do
-        local auraData = LiquidUpdaterSaved.WeakAuras[displayName]
+        local auraData = SchwalbenUpdaterSaved.WeakAuras[displayName]
         local uid = auraData and auraData.d.uid
         local importedVersion = auraData and auraData.d.liquidVersion or 0
         local installedAuraID = uid and UIDToID[uid]
@@ -111,11 +111,11 @@ local function BuildAuraImportElements()
     end
 
     if next(aurasToUpdate) then
-        LUP.LDB.icon = [[Interface\Addons\LiquidUpdater\Media\Textures\minimap_logo_red.tga]]
+        LUP.LDB.icon = [[Interface\Addons\SchwalbenUpdater\Media\Textures\minimap_logo_red.tga]]
 
         allAurasUpdatedText:Hide()
     else
-        LUP.LDB.icon = [[Interface\Addons\LiquidUpdater\Media\Textures\minimap_logo.tga]]
+        LUP.LDB.icon = [[Interface\Addons\SchwalbenUpdater\Media\Textures\minimap_logo.tga]]
 
         allAurasUpdatedText:Show()
     end
@@ -196,7 +196,7 @@ function LUP:InitializeAuraUpdater()
     AceComm:RegisterComm("LU_Request", BroadcastVersions)
     AceComm:RegisterComm("LU_Versions", ReceiveVersions)
 
-    for displayName, auraData in pairs(LiquidUpdaterSaved.WeakAuras) do
+    for displayName, auraData in pairs(SchwalbenUpdaterSaved.WeakAuras) do
         auraUIDs[auraData.d.uid] = true
 
         LUP.highestSeenVersionsTable[displayName] = auraData.d.liquidVersion

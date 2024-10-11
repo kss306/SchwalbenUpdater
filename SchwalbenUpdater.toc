@@ -1,15 +1,15 @@
 ## Interface: 100207, 110000, 110002
 ## Version: 1
-## Title: Liquid Updater
+## Title: Schwalben Updater
 ## Author: Naemesis
-## IconTexture: Interface\AddOns\LiquidUpdater\Media\Textures\logo_secondary.blp
-## SavedVariables: LiquidUpdaterSaved
+## IconTexture: Interface\AddOns\SchwalbenUpdater\Media\Textures\logo_secondary.blp
+## SavedVariables: SchwalbenUpdaterSaved
 ## OptionalDeps: ViragDevTool, WeakAuras
 
 embeds.xml
 
 GlobalSettings.lua
-WeakAuras.lua
+WeakAurasNew.lua
 WeakAurasImporter.lua
 Utility.lua
 
@@ -19,4 +19,4 @@ Interface/AuraImportElement.lua
 Interface/AuraUpdater.lua
 Interface/AuraChecker.lua
 
-LiquidUpdater.lua
+SchwalbenUpdater.lua

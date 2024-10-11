@@ -28,7 +28,7 @@ function LUP:CreateAuraImportElement(parent)
     function frame:SetDisplayName(displayName)
         frame.displayName:SetText(string.format("|cff%s%s|r", LUP.gs.visual.colorStrings.white, displayName))
 
-        local auraData = LiquidUpdaterSaved.WeakAuras[displayName]
+        local auraData = SchwalbenUpdaterSaved.WeakAuras[displayName]
 
         frame.importButton:SetScript(
             "OnClick",

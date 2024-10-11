@@ -12,25 +12,25 @@ eventFrame:SetScript(
         if event == "ADDON_LOADED" then
             local addOnName = ...
 
-            if addOnName == "LiquidUpdater" then
-                if not LiquidUpdaterSaved then LiquidUpdaterSaved = {} end
-                if not LiquidUpdaterSaved.minimap then LiquidUpdaterSaved.minimap = {} end
-                if not LiquidUpdaterSaved.settings then LiquidUpdaterSaved.settings = {} end
-                if not LiquidUpdaterSaved.settings.frames then LiquidUpdaterSaved.settings.frames = {} end
+            if addOnName == "SchwalbenUpdater" then
+                if not SchwalbenUpdaterSaved then SchwalbenUpdaterSaved = {} end
+                if not SchwalbenUpdaterSaved.minimap then SchwalbenUpdaterSaved.minimap = {} end
+                if not SchwalbenUpdaterSaved.settings then SchwalbenUpdaterSaved.settings = {} end
+                if not SchwalbenUpdaterSaved.settings.frames then SchwalbenUpdaterSaved.settings.frames = {} end
 
                 -- Minimap icon
                 LUP.LDB = LDB:NewDataObject(
-                    "Liquid Updater",
+                    "Schwalben Updater",
                     {
                         type = "data source",
-                        text = "Liquid Updater",
-                        icon = [[Interface\Addons\LiquidUpdater\Media\Textures\minimap_logo.tga]],
+                        text = "Schwalben Updater",
+                        icon = [[Interface\Addons\SchwalbenUpdater\Media\Textures\minimap_logo.tga]],
                         OnClick = function() LUP.window:SetShown(not LUP.window:IsShown()) end
                     }
                 )
 
-                LDBIcon:Register("Liquid Updater", LUP.LDB, LiquidUpdaterSaved.minimap)
-
+                LDBIcon:Register("Schwalben Updater", LUP.LDB, SchwalbenUpdaterSaved.minimap)
+                
                 LUP:InitializeWeakAurasImporter()
                 LUP:InitializeInterface()
                 LUP:InitializeAuraUpdater()
@@ -40,7 +40,7 @@ eventFrame:SetScript(
     end
 )
 
-SLASH_LIQUIDUPDATER1, SLASH_LIQUIDUPDATER2, SLASH_LIQUIDUPDATER3 = "/lu", "/liquidupdate", "/liquidupdater"
+SLASH_LIQUIDUPDATER1 = "/sup" -- , SLASH_LIQUIDUPDATER2, SLASH_LIQUIDUPDATER3 = "/sup", "/liquidupdate", "/liquidupdater"
 function SlashCmdList.LIQUIDUPDATER()
     LUP.window:SetShown(not LUP.window:IsShown())
 end

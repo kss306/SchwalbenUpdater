@@ -143,22 +143,22 @@ end
 
 -- Save the size/position of a frame in SavedVariables, keyed by some name
 function LUP:SaveSize(frame, name)
-    if not LiquidUpdaterSaved.settings.frames[name] then
-        LiquidUpdaterSaved.settings.frames[name] = {}
+    if not SchwalbenUpdaterSaved.settings.frames[name] then
+        SchwalbenUpdaterSaved.settings.frames[name] = {}
     end
 
     local width, height = frame:GetSize()
 
-    LiquidUpdaterSaved.settings.frames[name].width = width
-    LiquidUpdaterSaved.settings.frames[name].height = height
+    SchwalbenUpdaterSaved.settings.frames[name].width = width
+    SchwalbenUpdaterSaved.settings.frames[name].height = height
 end
 
 function LUP:SavePosition(frame, name)
-    if not LiquidUpdaterSaved.settings.frames[name] then
-        LiquidUpdaterSaved.settings.frames[name] = {}
+    if not SchwalbenUpdaterSaved.settings.frames[name] then
+        SchwalbenUpdaterSaved.settings.frames[name] = {}
     end
 
-    LiquidUpdaterSaved.settings.frames[name].points = {}
+    SchwalbenUpdaterSaved.settings.frames[name].points = {}
 
     local numPoints = frame:GetNumPoints()
 
@@ -167,7 +167,7 @@ function LUP:SavePosition(frame, name)
 
         if relativeTo == nil or relativeTo == UIParent then -- Only consider points relative to UIParent
             table.insert(
-                LiquidUpdaterSaved.settings.frames[name].points,
+                SchwalbenUpdaterSaved.settings.frames[name].points,
                 {
                     point = point,
                     relativePoint = relativePoint,
@@ -181,7 +181,7 @@ end
 
 -- Restore and apply saved size/position to a frame, keyed by some name
 function LUP:RestoreSize(frame, name)
-    local settings = LiquidUpdaterSaved.settings.frames[name]
+    local settings = SchwalbenUpdaterSaved.settings.frames[name]
 
     if not settings then return end
     if not settings.width then return end
@@ -191,7 +191,7 @@ function LUP:RestoreSize(frame, name)
 end
 
 function LUP:RestorePosition(frame, name)
-    local settings = LiquidUpdaterSaved.settings.frames[name]
+    local settings = SchwalbenUpdaterSaved.settings.frames[name]
 
     if not (settings and settings.points) then return end
 
@@ -259,5 +259,5 @@ function LUP:AddBorder(parent, thickness, horizontalOffset, verticalOffset)
 end
 
 function LUP:ErrorPrint(text)
-    print(string.format("LiquidUpdater |cffff0000ERROR|r: %s", text))
+    print(string.format("SchwalbenUpdater |cffff0000ERROR|r: %s", text))
 end

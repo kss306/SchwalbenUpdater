@@ -131,7 +131,7 @@ function LRP:CreateWindow(name, exitable, movable, resizable)
     -- Exit cross
     if exitable then
         window:AddButton(
-            "Interface\\Addons\\LiquidUpdater\\Media\\Textures\\ExitCross.tga",
+            "Interface\\Addons\\SchwalbenUpdater\\Media\\Textures\\ExitCross.tga",
             function()
                 window:Hide()
             end
@@ -147,7 +147,7 @@ function LRP:CreateWindow(name, exitable, movable, resizable)
         window.resizeFrame:SetPoint("BOTTOMRIGHT", window, "BOTTOMRIGHT")
 
         window.resizeFrame.tex = window.resizeFrame:CreateTexture(nil, "OVERLAY")
-        window.resizeFrame.tex:SetTexture("Interface\\Addons\\LiquidUpdater\\Media\\Textures\\ResizeTriangle.tga")
+        window.resizeFrame.tex:SetTexture("Interface\\Addons\\SchwalbenUpdater\\Media\\Textures\\ResizeTriangle.tga")
         window.resizeFrame.tex:SetVertexColor(0.5, 0.5, 0.5)
         window.resizeFrame.tex:SetAllPoints(window.resizeFrame)
         

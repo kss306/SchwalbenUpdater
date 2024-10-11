@@ -59,8 +59,8 @@ local function BuildAuraLabels()
     table.sort(
         sortedLabelTable,
         function(dispalyName1, displayName2)
-            local isAddOn1 = dispalyName1 == "LiquidUpdater"
-            local isAddOn2 = displayName2 == "LiquidUpdater"
+            local isAddOn1 = dispalyName1 == "SchwalbenUpdater"
+            local isAddOn2 = displayName2 == "SchwalbenUpdater"
 
             if isAddOn1 ~= isAddOn2 then
                 return isAddOn1
@@ -133,8 +133,8 @@ function LUP:UpdateCheckElementForUnit(unit, versionsTable)
     table.sort(
         data.versionsBehindTable,
         function(info1, info2)
-            local isAddOn1 = info1.displayName == "LiquidUpdater"
-            local isAddOn2 = info2.displayName == "LiquidUpdater"
+            local isAddOn1 = info1.displayName == "SchwalbenUpdater"
+            local isAddOn2 = info2.displayName == "SchwalbenUpdater"
 
             if isAddOn1 ~= isAddOn2 then
                 return isAddOn1
@@ -242,7 +242,7 @@ local function CheckElementInitializer(frame, data)
 
             LUP:AddTooltip(
                 versionFrame,
-                "No info has been received for this player's auras.|n|nThey may not have LiquidUpdater installed."
+                "No info has been received for this player's auras.|n|nThey may not have SchwalbenUpdater installed."
             )
         else
             versionFrame.versionsBehindText:Show()

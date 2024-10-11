@@ -94,7 +94,7 @@ function LUP:InitializeInterface()
     LUP.checkWindow:Hide()
 
     -- If there's no saved position/size settings for the main window yet, apply some default values
-    local windowSettings = LiquidUpdaterSaved.settings.frames["Main"]
+    local windowSettings = SchwalbenUpdaterSaved.settings.frames["Main"]
 
     if not windowSettings or not windowSettings.points then
         LUP.window:SetPoint("TOPLEFT", UIParent, "TOPLEFT", (screenWidth - windowWidth) / 2, -(screenHeight - windowHeight) / 2)
